@@ -9,7 +9,7 @@ int width = 800;
 int height = 800;
 
 int main() {
-    Model model("obj/cube.obj");
+    Model model("obj/african_head.obj");
     std::cout << "nverts: " << model.nverts() << std::endl;
     std::cout << "nfaces: " << model.nfaces() << std::endl;
 
@@ -51,7 +51,7 @@ int main() {
     Renderer renderer(image, model);
     renderer.render();
 
-    // image.flip_vertically();
+    image.flip_vertically();
     image.write_tga_file("output.tga");
     return 0;
 }
