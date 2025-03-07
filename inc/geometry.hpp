@@ -6,6 +6,12 @@
 template <typename T, int DIM> struct Vec {
 private:
   T _data[DIM];
+  T get(int i) { return i < DIM ? _data[i] : T(); }
+  T set(int i, T val) {
+    if (i < DIM) {
+      _data[i] = val;
+    }
+  }
 
 public:
   Vec() {
@@ -23,7 +29,17 @@ public:
       _data[i] = d[i];
     }
   }
-  T &operator[](int i) { return _data[i]; }
+  T &operator[](int i) {
+    return _data[i];
+  }
+  T x() { return get(0); }
+  T y() { return get(1); }
+  T z() { return get(2); }
+  T w() { return get(3); }
+  T x(T val) { return set(0, val); }
+  T y(T val) { return set(1, val); }
+  T z(T val) { return set(2, val); }
+  T w(T val) { return set(3, val); }
 };
 
 typedef Vec<float, 3> Vec3f;
