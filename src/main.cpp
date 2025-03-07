@@ -49,9 +49,9 @@ int main() {
     // line(image, 300, 200, 100, 200);
 
     Renderer renderer(image, model);
-    // renderer.render();
+    renderer.render();
 
-    image.flip_vertically();
+    // image.flip_vertically();
     image.write_tga_file("output.tga");
     return 0;
 }

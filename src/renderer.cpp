@@ -50,6 +50,10 @@ int Renderer::render() {
     v0 = shader.vertex(v0, View, Project, ViewPort);
     v1 = shader.vertex(v1, View, Project, ViewPort);
     v2 = shader.vertex(v2, View, Project, ViewPort);
+
+    line(image, v0[0], v0[1], v1[0], v1[1]);
+    line(image, v1[0], v1[1], v2[0], v2[1]);
+    line(image, v2[0], v2[1], v0[0], v0[1]);
   }
   return 0;
 }

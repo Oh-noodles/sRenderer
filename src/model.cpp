@@ -17,16 +17,17 @@ Model::Model(const char *filename) {
             char cTrash;
             float x, y, z;
             iss >> cTrash >> x >> y >> z;
-            Vec3f v;
+            Vec3f v({x, y, z});
             _verts.push_back(v);
         } else if (!line.compare(0, 2, "f ")) {
             // face
             char cTrash;
             int v0, v1, v2, iTrash;
-            iss >> cTrash >> v0 >> cTrash >> iTrash >> cTrash >> iTrash;
-            iss >> cTrash >> v1 >> cTrash >> iTrash >> cTrash >> iTrash;
-            iss >> cTrash >> v2 >> cTrash >> iTrash >> cTrash >> iTrash;
-            _faces.push_back(std::vector<int>({v0, v1, v2}));
+            iss >> cTrash;
+            iss >> v0 >> cTrash >> iTrash >> cTrash >> iTrash;
+            iss >> v1 >> cTrash >> iTrash >> cTrash >> iTrash;
+            iss >> v2 >> cTrash >> iTrash >> cTrash >> iTrash;
+            _faces.push_back(std::vector<int>({v0-1, v1-1, v2-1}));
         }
     }
 }
