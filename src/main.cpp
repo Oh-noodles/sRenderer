@@ -21,7 +21,21 @@ int main() {
     // std::cout << v << std::endl;
     std::cout << embed<2>(v) << std::endl;
     std::cout << embed<4>(v) << std::endl;
+  
+    std::cout << "x: " << v.x() << std::endl;
+    std::cout << "y: " << v.y() << std::endl;
+    std::cout << "z: " << v.z() << std::endl;
+    std::cout << "w: " << v.w() << std::endl;
 
+    v.x(3);
+    v.y(4);
+    v.z(5);
+    v.w(6);
+
+    std::cout << "x: " << v.x() << std::endl;
+    std::cout << "y: " << v.y() << std::endl;
+    std::cout << "z: " << v.z() << std::endl;
+    std::cout << "w: " << v.w() << std::endl;
 
     float m[] = {1,2,3,1,4,5,6,1,7,8,9,1,1,1,1,1};
     Matrix44f mat1({1,2,3,1,4,5,6,1,7,8,9,1,1,1,1,1});

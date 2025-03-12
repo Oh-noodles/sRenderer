@@ -7,7 +7,7 @@ template <typename T, int DIM> struct Vec {
 private:
   T _data[DIM];
   T get(int i) { return i < DIM ? _data[i] : T(); }
-  T set(int i, T val) {
+  void set(int i, T val) {
     if (i < DIM) {
       _data[i] = val;
     }
@@ -36,14 +36,23 @@ public:
   T y() { return get(1); }
   T z() { return get(2); }
   T w() { return get(3); }
-  T x(T val) { return set(0, val); }
-  T y(T val) { return set(1, val); }
-  T z(T val) { return set(2, val); }
-  T w(T val) { return set(3, val); }
+  T r() { return get(0); }
+  T g() { return get(1); }
+  T b() { return get(2); }
+  T a() { return get(3); }
+  void x(T val) { set(0, val); }
+  void y(T val) { set(1, val); }
+  void z(T val) { set(2, val); }
+  void w(T val) { set(3, val); }
+  void r(T val) { set(0, val); }
+  void g(T val) { set(1, val); }
+  void b(T val) { set(2, val); }
+  void a(T val) { set(3, val); }
 };
 
 typedef Vec<float, 3> Vec3f;
 typedef Vec<float, 4> Vec4f;
+typedef Vec<float, 2> Vec2f;
 
 template <typename T, int DIM>
 std::ostream &operator<<(std::ostream &s, Vec<T, DIM> v) {
@@ -53,6 +62,15 @@ std::ostream &operator<<(std::ostream &s, Vec<T, DIM> v) {
   }
   s << ")";
   return s;
+}
+
+template <typename T, int DIM>
+T operator*(Vec<T, DIM> v0, Vec<T, DIM> v1) {
+  T ret = T();
+  for (int i = 0;i < DIM; i++) {
+    ret += v0[i] * v1[i];
+  }
+  return ret;
 }
 
 template <int tDIM, typename T, int sDIM>
@@ -79,4 +97,18 @@ public:
 Matrix44f operator*(Matrix44f mat1, Matrix44f mat2);
 Vec4f operator*(Matrix44f mat, Vec4f v);
 std::ostream &operator<<(std::ostream &s, Matrix44f mat);
+
+template <typename T, int DIM>
+float edgeFunction(Vec<T, DIM> v0, Vec<T, DIM> v1, Vec<T, DIM> v2) {
+  return (v2.x() - v0.x()) * (v1.y() - v0.y()) - (v2.y() - v0.y()) * (v1.x() - v0.x());
+}
+
+template <typename T, int DIM>
+bool inside(Vec<T, DIM> v0, Vec<T, DIM> v1, Vec<T, DIM> v2, Vec<T, DIM> p) {
+  float w0 = edgeFunction(v1, v2, p);
+  float w1 = edgeFunction(v2, v0, p);
+  float w2 = edgeFunction(v0, v1, p);
+  return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0);
+}
+
 #endif
