@@ -14,7 +14,7 @@ class Renderer {
 
     Renderer(TGAImage &image, Model &model);
     ~Renderer();
-    int render();
+    int render(bool wireframe = false);
 };
 
 #endif

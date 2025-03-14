@@ -9,16 +9,17 @@ int width = 800;
 int height = 800;
 
 int main() {
-    Model model("obj/african_head.obj");
+    Model model("obj/african_head.obj", "texture/african_head_diffuse.tga");
     std::cout << "nverts: " << model.nverts() << std::endl;
     std::cout << "nfaces: " << model.nfaces() << std::endl;
 
-    int d[] = {1, 2, 3};
-    Vec<int, 3> v(d);
+    float d[] = {2, -2, 0};
+    Vec<float, 3> v(d);
+    v.normalize();
     // v[1] = 1;
     // v[2] = 2;
     // std::cout << v[0] << ", " << v[1] << ", " << v[2] << std::endl;
-    // std::cout << v << std::endl;
+    std::cout << "v: " << v << std::endl;
     std::cout << embed<2>(v) << std::endl;
     std::cout << embed<4>(v) << std::endl;
   

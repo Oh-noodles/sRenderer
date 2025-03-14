@@ -2,6 +2,7 @@
 #define __GEOMETRY_H__
 #include <array>
 #include <iostream>
+#include <cmath>
 
 template <typename T, int DIM> struct Vec {
 private:
@@ -27,6 +28,16 @@ public:
   Vec(std::array<T, DIM> d) {
     for (int i = 0; i < DIM; i++) {
       _data[i] = d[i];
+    }
+  }
+  void normalize() {
+    float sum = 0;
+    for (int i = 0; i < DIM; i++) {
+      sum += std::pow(_data[i], 2);
+    }
+    sum = std::sqrt(sum);
+    for (int i = 0; i < DIM; i++) {
+      _data[i] /= sum;
     }
   }
   T &operator[](int i) {
@@ -111,4 +122,5 @@ bool inside(Vec<T, DIM> v0, Vec<T, DIM> v1, Vec<T, DIM> v2, Vec<T, DIM> p) {
   return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0);
 }
 
+float invf(int i,int j,const float* m);
 #endif

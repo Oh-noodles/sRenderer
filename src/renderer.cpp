@@ -16,15 +16,25 @@ Renderer::Renderer(TGAImage &image, Model &model) : image(image), model(model) {
 
 Renderer::~Renderer() {}
 
-int Renderer::render() {
+int Renderer::render(bool wireframe) {
+  // Matrix44f CamToWrold({
+  //   1,  0,  0,  0,
+  //   0,  1,  0,  1,
+  //   0,  0,  1,  2,
+  //   0,  0,  0,  1
+  // });
   Matrix44f CamToWrold({
-    1,  0,  0,  0,
-    0,  1,  0,  0,
-    0,  0,  1,  2,
-    0,  0,  0,  1
+    //right_x,  up_x,   forward_x,  t_x
+    1,          0,      0,          0,
+    //right_y,  up_y,   forward_y,  t_y
+    0,          0.707,  0.707,      2,
+    //right_z,  up_z,   forward_z,  t_z
+    0,          -0.707, 0.707,      2,
+    0,          0,      0,          1
   });
 
   float n = 1, f = 3, t = 1, b = -1, l = -1, r = 1;
+  // float n = 1, f = 3, t = 0.2, b = -0.2, l = -0.2, r = 0.2;
   const int width = this->image.get_width();
   const int height = this->image.get_height();
 
@@ -50,6 +60,18 @@ int Renderer::render() {
     Vec4f v1 = embed<4>(model.vert(face[1]));
     Vec4f v2 = embed<4>(model.vert(face[2]));
 
+    SimpleShader shader;
+    v0 = shader.vertex(v0, View, Project, ViewPort);
+    v1 = shader.vertex(v1, View, Project, ViewPort);
+    v2 = shader.vertex(v2, View, Project, ViewPort);
+
+    if (wireframe) {
+      line(image, v0.x(), v0.y(), v1.x(), v1.y());
+      line(image, v1.x(), v1.y(), v2.x(), v2.y());
+      line(image, v2.x(), v2.y(), v0.x(), v0.y());
+      continue;
+    }
+
     Vec3f vt0 = model.textureVert(face[3]);
     Vec3f vt1 = model.textureVert(face[4]);
     Vec3f vt2 = model.textureVert(face[5]);
@@ -65,11 +87,6 @@ int Renderer::render() {
     float ity0 = nt0 * lightDir;
     float ity1 = nt1 * lightDir;
     float ity2 = nt2 * lightDir;
-
-    SimpleShader shader;
-    v0 = shader.vertex(v0, View, Project, ViewPort);
-    v1 = shader.vertex(v1, View, Project, ViewPort);
-    v2 = shader.vertex(v2, View, Project, ViewPort);
 
 
     int minX = std::max(0.0f, std::min({v0.x(), v1.x(), v2.x()}));
@@ -99,9 +116,6 @@ int Renderer::render() {
       }
     }
 
-    // line(image, v0.x(), v0.y(), v1.x(), v1.y());
-    // line(image, v1.x(), v1.y(), v2.x(), v2.y());
-    // line(image, v2.x(), v2.y(), v0.x(), v0.y());
   }
   return 0;
 }
