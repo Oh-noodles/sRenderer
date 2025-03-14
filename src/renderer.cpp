@@ -9,11 +9,13 @@
 
 #define PI 3.14159265358979323846
 
-Renderer::Renderer(TGAImage &image, Model &model) : image(image), model(model) {
+Renderer::Renderer(int width, int height, Model &model) : model(model) {
+  image = TGAImage(width, height, TGAImage::RGB);
+
   zBuffer =
-      TGAImage(image.get_width(), image.get_height(), TGAImage::GRAYSCALE);
-  for (int x = 0; x < image.get_width(); x++) {
-    for (int y = 0; y < image.get_height(); y++) {
+      TGAImage(width, height, TGAImage::GRAYSCALE);
+  for (int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
       zBuffer.set(x, y, TGAColor(255, 1));
     }
   }
@@ -21,7 +23,7 @@ Renderer::Renderer(TGAImage &image, Model &model) : image(image), model(model) {
 
 Renderer::~Renderer() {}
 
-int Renderer::render(bool wireframe) {
+TGAImage Renderer::render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe) {
   // Matrix44f CamToWrold({
   //   1,  0,  0,  0,
   //   0,  1,  0,  1,
@@ -38,11 +40,12 @@ int Renderer::render(bool wireframe) {
   //   0,          0,      0,          1
   // });
 
-  float angle = 405;
-  float radians = PI / 180 * angle;
-  Matrix44f CamToWrold =
-      lookAt(3.f * Vec3f({std::cos(radians), 0, -std::sin(radians)}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
+  // float angle = -90;
+  // float radians = PI / 180 * angle;
+  // Matrix44f CamToWrold =
+  //     lookAt(3.f * Vec3f({std::cos(radians), 0, -std::sin(radians)}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
 
+  Matrix44f CamToWrold = lookAt(eye, target, up);
   // float n = 1, f = 3, t = 1, b = -1, l = -1, r = 1;
   float n = 1, f = 30, t = 1, b = -1, l = -1, r = 1;
   const int width = this->image.get_width();
@@ -59,6 +62,7 @@ int Renderer::render(bool wireframe) {
 
   Vec3f lightDir({1, -1, 1});
 
+  image.clear();
   for (int faceIdx = 0; faceIdx < model.nfaces(); faceIdx++) {
     std::vector<int> face = model.face(faceIdx);
     Vec4f v0 = embed<4>(model.vert(face[0]));
@@ -124,5 +128,5 @@ int Renderer::render(bool wireframe) {
       }
     }
   }
-  return 0;
+  return image;
 }

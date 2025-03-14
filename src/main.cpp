@@ -19,11 +19,8 @@ int main() {
     v1.normalize();
     std::cout << v1 << std::endl;
 
-    TGAImage image = TGAImage(width, height, TGAImage::RGB);
-    // line(image, 300, 200, 100, 200);
-
-    Renderer renderer(image, model);
-    renderer.render();
+    Renderer renderer(width, height, model);
+    TGAImage image = renderer.render(Vec3f({0, 0, 3}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
 
     image.flip_vertically();
     image.write_tga_file("output.tga");

@@ -7,14 +7,14 @@
 
 class Renderer {
   public:
-    TGAImage &image;
+    TGAImage image;
     Model &model;
     TGAImage zBuffer;
     Matrix44f View, Project, ViewPort;
 
-    Renderer(TGAImage &image, Model &model);
+    Renderer(int width, int height, Model &model);
     ~Renderer();
-    int render(bool wireframe = false);
+    TGAImage render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe = false);
 };
 
 #endif
