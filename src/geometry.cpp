@@ -47,6 +47,19 @@ Matrix44f Matrix44f::transpose() {
     return Matrix44f(m);
 }
 
+
+Matrix44f lookAt(Vec3f eye, Vec3f center, Vec3f up) {
+  Vec3f forward = (eye - center).normalize();
+  Vec3f right = cross(up, forward).normalize();
+  up.normalize();
+  return Matrix44f({
+    right.x(), up.x(), forward.x(), eye.x(),
+    right.y(), up.y(), forward.y(), eye.y(),
+    right.z(), up.z(), forward.z(), eye.z(),
+    0,         0,      0,           1
+  });
+}
+
 Matrix44f operator*(Matrix44f mat1, Matrix44f mat2) {
     float m[16] = {};
     // every row of m1

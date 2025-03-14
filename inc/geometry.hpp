@@ -30,7 +30,7 @@ public:
       _data[i] = d[i];
     }
   }
-  void normalize() {
+  Vec<T, DIM> normalize() {
     float sum = 0;
     for (int i = 0; i < DIM; i++) {
       sum += std::pow(_data[i], 2);
@@ -39,6 +39,7 @@ public:
     for (int i = 0; i < DIM; i++) {
       _data[i] /= sum;
     }
+    return *this;
   }
   T &operator[](int i) {
     return _data[i];
@@ -84,6 +85,35 @@ T operator*(Vec<T, DIM> v0, Vec<T, DIM> v1) {
   return ret;
 }
 
+template <typename T, int DIM>
+Vec<T, DIM> operator*(T a, Vec<T, DIM> v) {
+  Vec<T, DIM> ret;
+  for (int i = 0; i < DIM; i++) {
+    ret[i] = a * v[i];
+  }
+  return ret;
+}
+
+template <typename T, int DIM>
+Vec<T, DIM> operator-(Vec<T, DIM> v0, Vec<T, DIM> v1) {
+  Vec<T, DIM> ret;
+  for (int i = 0; i < DIM; i++) {
+    ret[i] = v0[i] - v1[i];
+  }
+  return ret;
+}
+
+template <typename T>
+Vec<T, 3> cross(Vec<T, 3>v0, Vec<T, 3> v1) {
+  Vec<T, 3> ret({
+    v0.y()*v1.z() - v0.z()*v1.y(),
+    v0.z()*v1.x() - v0.x()*v1.z(),
+    v0.x()*v1.y() - v0.y()*v1.x()
+  });
+  return ret;
+}
+
+
 template <int tDIM, typename T, int sDIM>
 Vec<T, tDIM> embed(Vec<T, sDIM> v, T fill = 1) {
   Vec<T, tDIM> t;
@@ -108,6 +138,8 @@ public:
 Matrix44f operator*(Matrix44f mat1, Matrix44f mat2);
 Vec4f operator*(Matrix44f mat, Vec4f v);
 std::ostream &operator<<(std::ostream &s, Matrix44f mat);
+
+Matrix44f lookAt(Vec3f eye, Vec3f center, Vec3f up);
 
 template <typename T, int DIM>
 float edgeFunction(Vec<T, DIM> v0, Vec<T, DIM> v1, Vec<T, DIM> v2) {

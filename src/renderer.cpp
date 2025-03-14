@@ -3,13 +3,18 @@
 #include "shader.hpp"
 #include "tgaImage.hpp"
 #include <algorithm>
+#include <cmath>
+#include <sstream>
 #include <vector>
 
+#define PI 3.14159265358979323846
+
 Renderer::Renderer(TGAImage &image, Model &model) : image(image), model(model) {
-  zBuffer = TGAImage(image.get_width(), image.get_height(), TGAImage::GRAYSCALE);
+  zBuffer =
+      TGAImage(image.get_width(), image.get_height(), TGAImage::GRAYSCALE);
   for (int x = 0; x < image.get_width(); x++) {
     for (int y = 0; y < image.get_height(); y++) {
-      zBuffer.set(x,  y, TGAColor(255, 1));
+      zBuffer.set(x, y, TGAColor(255, 1));
     }
   }
 }
@@ -23,34 +28,34 @@ int Renderer::render(bool wireframe) {
   //   0,  0,  1,  2,
   //   0,  0,  0,  1
   // });
-  Matrix44f CamToWrold({
-    //right_x,  up_x,   forward_x,  t_x
-    1,          0,      0,          0,
-    //right_y,  up_y,   forward_y,  t_y
-    0,          0.707,  0.707,      2,
-    //right_z,  up_z,   forward_z,  t_z
-    0,          -0.707, 0.707,      2,
-    0,          0,      0,          1
-  });
+  // Matrix44f CamToWrold({
+  //   //right_x,  up_x,   forward_x,  t_x
+  //   1,          0,      0,          0,
+  //   //right_y,  up_y,   forward_y,  t_y
+  //   0,          0.707,  0.707,      2,
+  //   //right_z,  up_z,   forward_z,  t_z
+  //   0,          -0.707, 0.707,      2,
+  //   0,          0,      0,          1
+  // });
 
-  float n = 1, f = 3, t = 1, b = -1, l = -1, r = 1;
-  // float n = 1, f = 3, t = 0.2, b = -0.2, l = -0.2, r = 0.2;
+  float angle = 405;
+  float radians = PI / 180 * angle;
+  Matrix44f CamToWrold =
+      lookAt(3.f * Vec3f({std::cos(radians), 0, -std::sin(radians)}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
+
+  // float n = 1, f = 3, t = 1, b = -1, l = -1, r = 1;
+  float n = 1, f = 30, t = 1, b = -1, l = -1, r = 1;
   const int width = this->image.get_width();
   const int height = this->image.get_height();
 
   Matrix44f View = CamToWrold.inverse();
-  Matrix44f Project = Matrix44f({
-    2*n/(r-l),    0,            (r+l)/(r-l),  0,
-    0,            2*n/(t-b),    (t+b)/(t-b),  0,
-    0,            0,            -(f+n)/(f-n), -2*f*n/(f-n),
-    0,            0,            -1,           0
-  });
-  Matrix44f ViewPort = Matrix44f({
-    width/2.f,   0,          0,     width/2.f,
-    0,          height/2.f,  0,      height/2.f,
-    0,          0,          255/2., 255/2.,
-    0,          0,          0,      1
-  });
+  Matrix44f Project =
+      Matrix44f({2 * n / (r - l), 0, (r + l) / (r - l), 0, 0, 2 * n / (t - b),
+                 (t + b) / (t - b), 0, 0, 0, -(f + n) / (f - n),
+                 -2 * f * n / (f - n), 0, 0, -1, 0});
+  Matrix44f ViewPort =
+      Matrix44f({width / 2.f, 0, 0, width / 2.f, 0, height / 2.f, 0,
+                 height / 2.f, 0, 0, 255 / 2., 255 / 2., 0, 0, 0, 1});
 
   Vec3f lightDir({1, -1, 1});
 
@@ -80,14 +85,16 @@ int Renderer::render(bool wireframe) {
     Vec3f nt1 = model.normalVert(face[7]);
     Vec3f nt2 = model.normalVert(face[8]);
 
-    TGAColor c0 = model.textureColor(vt0.x() * model.textureWidth, (1 - vt0.y()) * model.textureHeight);
-    TGAColor c1 = model.textureColor(vt1.x() * model.textureWidth, (1 - vt1.y()) * model.textureHeight);
-    TGAColor c2 = model.textureColor(vt2.x() * model.textureWidth, (1 - vt2.y()) * model.textureHeight);
+    TGAColor c0 = model.textureColor(vt0.x() * model.textureWidth,
+                                     (1 - vt0.y()) * model.textureHeight);
+    TGAColor c1 = model.textureColor(vt1.x() * model.textureWidth,
+                                     (1 - vt1.y()) * model.textureHeight);
+    TGAColor c2 = model.textureColor(vt2.x() * model.textureWidth,
+                                     (1 - vt2.y()) * model.textureHeight);
 
     float ity0 = nt0 * lightDir;
     float ity1 = nt1 * lightDir;
     float ity2 = nt2 * lightDir;
-
 
     int minX = std::max(0.0f, std::min({v0.x(), v1.x(), v2.x()}));
     int maxX = std::min(width, (int)std::max({v0.x(), v1.x(), v2.x()}));
@@ -103,19 +110,19 @@ int Renderer::render(bool wireframe) {
           float w1 = edgeFunction(v2, v0, p) / area;
           float w2 = edgeFunction(v0, v1, p) / area;
           // 1/z = w0/z0 + w1/z1 + w2/z2
-          float z = 1.0 / (w0/v0.z() + w1/v1.z() + w2/v2.z());
+          float z = 1.0 / (w0 / v0.z() + w1 / v1.z() + w2 / v2.z());
 
           // std::cout << "z: " << z << std::endl;
           if (abs(z) < zBuffer.get(x, y).val) {
             // std::cout << "p: " << p << std::endl;
             zBuffer.set(x, y, TGAColor(abs(z), 1));
-            TGAColor color = shader.fragment(v0, v1, v2, p, c0, c1, c2, ity0, ity1, ity2);
+            TGAColor color =
+                shader.fragment(v0, v1, v2, p, c0, c1, c2, ity0, ity1, ity2);
             image.set(x, y, color);
           }
         }
       }
     }
-
   }
   return 0;
 }
