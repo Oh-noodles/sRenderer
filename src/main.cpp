@@ -1,9 +1,12 @@
 #include <iostream>
+#include "SFML/Graphics/RenderWindow.hpp"
+#include "SFML/Window/VideoMode.hpp"
 #include "geometry.hpp"
 #include "model.hpp"
 #include "renderer.hpp"
 #include "tgaImage.hpp"
 #include "shader.hpp"
+#include <SFML/Graphics.hpp>
 
 int width = 800;
 int height = 800;
@@ -24,5 +27,21 @@ int main() {
 
     image.flip_vertically();
     image.write_tga_file("output.tga");
+
+
+    auto window = sf::RenderWindow(sf::VideoMode({(unsigned int)width, (unsigned int)height}), "sRenderer");
+    window.setFramerateLimit(144);
+
+    while (window.isOpen()) {
+      while (const std::optional event = window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+          window.close();
+        }
+      }
+
+      window.clear();
+      window.display();
+    }
+
     return 0;
 }
