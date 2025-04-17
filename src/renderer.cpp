@@ -10,7 +10,9 @@
 #define PI 3.14159265358979323846
 
 Renderer::Renderer(int width, int height, Model &model) : model(model) {
-  image = TGAImage(width, height, TGAImage::RGB);
+  _width = width;
+  _height = height;
+  image = TGAImage(width, height, TGAImage::RGBA);
 
   zBuffer =
       TGAImage(width, height, TGAImage::GRAYSCALE);
@@ -22,6 +24,15 @@ Renderer::Renderer(int width, int height, Model &model) : model(model) {
 }
 
 Renderer::~Renderer() {}
+
+void Renderer::init() {
+  image.clear();
+  for (int x = 0; x < _width; x++) {
+    for (int y = 0; y < _height; y++) {
+      zBuffer.set(x, y, TGAColor(255, 1));
+    }
+  }
+}
 
 TGAImage Renderer::render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe) {
   // Matrix44f CamToWrold({
@@ -60,9 +71,10 @@ TGAImage Renderer::render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe) {
       Matrix44f({width / 2.f, 0, 0, width / 2.f, 0, height / 2.f, 0,
                  height / 2.f, 0, 0, 255 / 2., 255 / 2., 0, 0, 0, 1});
 
-  Vec3f lightDir({1, -1, 1});
+  // Vec3f lightDir({1, -1, 1});
+  Vec3f lightDir((eye - target).normalize());
 
-  image.clear();
+  init(); // clear image and reset zBuffer
   for (int faceIdx = 0; faceIdx < model.nfaces(); faceIdx++) {
     std::vector<int> face = model.face(faceIdx);
     Vec4f v0 = embed<4>(model.vert(face[0]));

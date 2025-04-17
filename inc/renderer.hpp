@@ -6,6 +6,9 @@
 #include "tgaImage.hpp"
 
 class Renderer {
+  private:
+    int _width;
+    int _height;
   public:
     TGAImage image;
     Model &model;
@@ -14,6 +17,7 @@ class Renderer {
 
     Renderer(int width, int height, Model &model);
     ~Renderer();
+    void init();
     TGAImage render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe = false);
 };
 

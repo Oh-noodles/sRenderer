@@ -34,7 +34,8 @@ struct SimpleShader: public IShader {
     float ity = z * (ity0 * w0/v0.z() + ity1 * w1/v1.z() + ity2 * w2/v2.z());
     ity = std::min(ity, 1.0f);
     ity = std::max(ity, 0.0f);
-    return TGAColor(r*ity, g*ity, b*ity, 255*ity);
+    // ity = 1.0f;
+    return TGAColor(b*ity, g*ity, r*ity, 255*ity);
   };
 };
 
