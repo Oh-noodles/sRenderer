@@ -1,4 +1,4 @@
-# Srenderer
+# sRenderer
 
 sRenderer is a software rendering program. All computation happens in CPU, no GPU involved. Which means no graphic libraries like OpenGL and Vulkan are Used. The only third library  used is SFML, which creates a window for us. Everything was built from scratch, including matrix computation, model loading, perspective projection, and shading.
 
