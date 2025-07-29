@@ -7,11 +7,13 @@ There are two parts of this project:
 - source code
 - detailed documentation explaining everything you need to implement it (WIP)
 
-<center class="third">
-    <img src="doc/assets/head.gif" width="30%">
-    <img src="doc/assets/shark.gif" width="30%">
-    <img src="doc/assets/tree.gif" width="30%">
-</center>
+<table>
+  <tr>
+    <td><center><img src="doc/assets/head.gif" width="200"></center></td>
+    <td><center><img src="doc/assets/shark.gif" width="200"></center></td>
+    <td><center><img src="doc/assets/tree.gif" width="200"></center></td>
+  </tr>
+</table>
 
 # Features
 
