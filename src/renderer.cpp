@@ -108,9 +108,9 @@ TGAImage Renderer::render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe) {
     TGAColor c2 = model.textureColor(vt2.x() * model.textureWidth,
                                      (1 - vt2.y()) * model.textureHeight);
 
-    float ity0 = nt0 * lightDir;
-    float ity1 = nt1 * lightDir;
-    float ity2 = nt2 * lightDir;
+    float ity0 = nt0 * lightDir + 0.4;
+    float ity1 = nt1 * lightDir + 0.4;
+    float ity2 = nt2 * lightDir + 0.4;
 
     int minX = std::max(0.0f, std::min({v0.x(), v1.x(), v2.x()}));
     int maxX = std::min(width, (int)std::max({v0.x(), v1.x(), v2.x()}));
@@ -132,8 +132,7 @@ TGAImage Renderer::render(Vec3f eye, Vec3f target, Vec3f up, bool wireframe) {
           if (abs(z) < zBuffer.get(x, y).val) {
             // std::cout << "p: " << p << std::endl;
             zBuffer.set(x, y, TGAColor(abs(z), 1));
-            TGAColor color =
-                shader.fragment(v0, v1, v2, p, c0, c1, c2, ity0, ity1, ity2);
+            TGAColor color = shader.fragment(v0, v1, v2, p, c0, c1, c2, ity0, ity1, ity2);
             image.set(x, y, color);
           }
         }

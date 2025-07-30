@@ -18,8 +18,31 @@
 int width = 800;
 int height = 800;
 
+
+std::string modelFiles[][2] = {
+  {"obj/african_head.obj", "texture/african_head_diffuse.tga"},
+  {"obj/shark.obj", "texture/shark_diffuse.tga"},
+  {"obj/tree.obj", "texture/tree_diffuse.tga"}
+};
+
+
+int pickModel() {
+    int modelIdx = -1;
+    do {
+      std::cout << "Choose a model blew:" << std::endl;
+      std::cout << "0. head" << std::endl;
+      std::cout << "1. shark" << std::endl;
+      std::cout << "2. tree" << std::endl;
+      std::cout << "Your choice [0-2]: ";
+      std::cin >> modelIdx;
+    } while(!(0 <= modelIdx && modelIdx < 3));
+    return modelIdx;
+}
+
 int main() {
-    Model model("obj/african_head.obj", "texture/african_head_diffuse.tga");
+    int modelIdx = pickModel();
+
+    Model model(modelFiles[modelIdx][0].c_str(), modelFiles[modelIdx][1].c_str());
     std::cout << "nverts: " << model.nverts() << std::endl;
     std::cout << "nfaces: " << model.nfaces() << std::endl;
 
@@ -38,8 +61,7 @@ int main() {
 
     // TGAImage image = renderer.render(Vec3f({0, 0, 3}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
     // image.flip_vertically();
-    // image.write_tga_file("output1.tga");
-
+    // image.write_tga_file("output.tga");
 
     auto window = sf::RenderWindow(sf::VideoMode({(unsigned int)width, (unsigned int)height}), "sRenderer");
     window.setFramerateLimit(60);
@@ -60,7 +82,8 @@ int main() {
       if (angle > PI*2)
         angle -= PI*2;
 
-      TGAImage image = renderer.render(3.f * Vec3f({std::cos(angle), 0, -std::sin(angle)}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
+      float cameraDist = 2.f;
+      TGAImage image = renderer.render(cameraDist * Vec3f({std::cos(angle), 0, -std::sin(angle)}), Vec3f({0, 0, 0}), Vec3f({0, 1, 0}));
       image.flip_vertically();
 
       imageData = image.buffer();

@@ -50,7 +50,14 @@ Model::Model(const char *objFilename, const char *textureFilename) {
       iss >> v0 >> cTrash >> vt0 >> cTrash >> nt0;
       iss >> v1 >> cTrash >> vt1 >> cTrash >> nt1;
       iss >> v2 >> cTrash >> vt2 >> cTrash >> nt2;
-      _faces.push_back(std::vector<int>({v0-1, v1-1, v2-1, vt0-1, vt1-1, vt2-1, nt0-1, nt1-1, nt2-1}));
+      if (iss.eof()) {
+        _faces.push_back(std::vector<int>({v0-1, v1-1, v2-1, vt0-1, vt1-1, vt2-1, nt0-1, nt1-1, nt2-1}));
+      } else {
+        int v3, vt3, nt3;
+        iss >> v3 >> cTrash >> vt3 >> cTrash >> nt3;
+        _faces.push_back(std::vector<int>({v0-1, v1-1, v3-1, vt0-1, vt1-1, vt3-1, nt0-1, nt1-1, nt3-1}));
+        _faces.push_back(std::vector<int>({v3-1, v1-1, v2-1, vt3-1, vt1-1, vt2-1, nt3-1, nt1-1, nt2-1}));
+      }
     }
   }
 

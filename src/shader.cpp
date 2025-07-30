@@ -1,6 +1,5 @@
 #include "shader.hpp"
 #include "tgaImage.hpp"
-#include <__type_traits/is_swappable.h>
 #include <cstdlib>
 #include <fstream>
 

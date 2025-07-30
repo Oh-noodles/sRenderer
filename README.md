@@ -30,10 +30,10 @@ There are two parts of this project:
 # Setup
 
 - Platform
-    - Linux
+    - Linux / MacOS
 - Dependency
     - g++
-    - make
+    - cmake
 - build and run
     
     ```bash
